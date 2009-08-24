@@ -30,7 +30,25 @@ require 'edgecase'
 # Your goal is to write the score method.
 
 def score(dice)
-  # You need to write this method
+  result = 0
+  dice.each do |n|
+    set = dice.select { |i| i == n }
+    if set.length >= 3
+      result += 1000 if n == 1
+      result += n * 100 if n != 1
+      dice -= set[0..2]
+      # Re-add the elements that weren't supposed to be removed
+      dice += [n] * (set.length - 3)
+    end
+  end
+
+  ones = dice.select { |i| i == 1 }.length 
+  result += ones * 100 unless ones.nil?
+
+  fives = dice.select { |i| i == 5 }.length 
+  result += fives * 50 unless fives.nil?
+  
+  result
 end
 
 class AboutScoringAssignment < EdgeCase::Koan
@@ -67,7 +85,7 @@ class AboutScoringAssignment < EdgeCase::Koan
   end
 
   def test_score_of_mixed_is_sum
-    assert_equal 50, score([2,5,2,2,3])
+    assert_equal 250, score([2,5,2,2,3])
     assert_equal 550, score([5,5,5,5])
   end
 
