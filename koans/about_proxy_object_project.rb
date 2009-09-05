@@ -13,8 +13,45 @@ require 'edgecase'
 # of the Proxy class is given in the AboutProxyObjectProject koan.
 
 class Proxy
+  attr_reader :messages
+  
   def initialize(target_object)
     @object = target_object
+    @messages = []
+    @counter = {}
+  end
+  
+  def method_missing(method_name, *args)
+    if @object.respond_to?(method_name)
+      count_method_call(method_name)
+      if args.empty?
+        @object.send method_name
+      else
+        @object.send method_name, *args
+      end
+    else
+      super(method_name, *args)
+    end
+  end
+  
+  def respond_to?(method_name)
+    @object.respond_to?(method_name) || super(method_name)
+  end
+  
+  def called?(method_name)
+    @counter.has_key? method_name
+  end
+  
+  def number_of_times_called(method_name)
+    @counter[method_name] || 0
+  end
+  
+  private
+  
+  def count_method_call(method_name)
+    count = @counter[method_name] || 0
+    @counter[method_name] = count + 1
+    @messages << method_name
   end
 end
 
