@@ -21,14 +21,3 @@ module Test::Unit
  
   end
 end
-
-module StringIOHelper
-  def provide_input(input)
-    @input << input
-    @input.rewind
-  end
-
-  def expect_output(output)
-    assert_equal(output, @output.string)
-  end
-end

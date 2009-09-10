@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'rake/rdoctask'
+require 'rake/testtask'
 
 task :default => :walk_the_path
 
@@ -12,3 +13,4 @@ Rake::RDocTask.new do |rd|
   rd.main = "README.rdoc"
   rd.rdoc_files.include("README.rdoc", "koans/*.rb")
 end
+
