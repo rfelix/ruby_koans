@@ -1,3 +1,11 @@
+This repository contains my solutions to the Ruby Koans. So please, browse
+around and look at my answers. If you see anything that could be better, please
+let me know.
+
+I've also taken the liberty to fix some problems with the actual code that I
+found along the way. I guess one can consider them as just another koan that
+needs to be resolved.
+
 = EdgeCase Ruby Koans
 
 The Ruby Koans walk you along the path to enlightenment in order to learn Ruby. 
