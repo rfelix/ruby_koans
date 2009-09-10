@@ -1,6 +1,6 @@
 = Playing Greed
 
-Greed is a dice game played amoung 2 or more players, using 6
+Greed is a dice game played amoung 2 or more players, using 5
 six-sided dice.
 
 == Playing Greed

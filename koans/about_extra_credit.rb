@@ -36,7 +36,8 @@ def score(dice)
   result
 end
 
-WrongNumberOfPlayers = Class.new(StandardError)
+WrongNumberOfPlayers  = Class.new(StandardError)
+InvalidNumberOfDice   = Class.new(StandardError)
 
 class Game
   attr_reader :players
@@ -71,21 +72,32 @@ class Player
     @dice = DiceSet.new
   end
   
-  def roll_dice
-    @dice.roll(6)
+  def roll_dice(n_dice = 5)
+    raise InvalidNumberOfDice if n_dice < 1 || n_dice > 5
+    @dice.roll(n_dice)
   end
-  
-  # TODO: Remove gets form @roll? and only have IO operations in start_turn
   
   def start_turn
-    # while roll?
-      # Add score
-      # If score 0, return 0 for this turn
+    turn_score = 0
+    while true
+      @output.puts "#{@name}: Roll?"
+      roll_again = roll?(@input.gets.chomp)
+      break if !roll_again
+      if roll_again.nil?
+        @output.puts "Unknown reply. Accepted answers: y(es) or n(o)"
+        next
+      end
+      dice_roll = roll_dice()
+      dice_score = score(dice_roll)
+      turn_score += dice_score
+      return 0 if turn_score > 0 && dice_score == 0
+    end
+    
+    turn_score
   end
   
-  def roll?
-    @output.puts "Roll? (y[es]/n[o])"
-    case @input.gets
+  def roll?(response)
+    case response
     when /^y(es)?$/i
       true
     when /^no?$/i
@@ -112,32 +124,54 @@ if __FILE__ == $PROGRAM_NAME
       assert_equal("P", @player.name)
     end
      
-    must "roll 6 dices" do
-      dice_roll = @player.roll_dice
-      assert_equal 6, dice_roll.length
+    1.upto(5) do |i|
+      must "roll #{i} dice" do
+        dice_roll = @player.roll_dice(i)
+        assert_equal i, dice_roll.length
+      end
+    end
+    
+    [-5,0,6].each do |i|
+      must "raise error when rolling #{i} dice" do
+        assert_raise(InvalidNumberOfDice) { @player.roll_dice(i) }
+      end
     end
     
     %w[y Y YeS YES yes].each do |yes|
       must "return true when user replies #{yes}" do
-        provide_input(yes)
-        assert @player.roll?, "#{yes.inspect} expected to be true"
+        assert @player.roll?(yes), "#{yes.inspect} expected to be true"
       end
     end
 
     %w[n N no No nO].each do |no|
       must "return false when user replies #{no}" do
-        provide_input(no)
-        assert !@player.roll?, "#{no.inspect} expected to be false"
+        assert !@player.roll?(no), "#{no.inspect} expected to be false"
       end
     end
     
     %w[harhar Yippy sleeeeep].each do |bad|
       must "return nil because #{bad} is not a variant of 'yes' or 'no'" do
-        provide_input(bad)
-        assert_nil @player.roll?, "#{bad.inspect} expected to parse as nil"
+        assert_nil @player.roll?(bad), "#{bad.inspect} expected to parse as nil"
       end
     end
     
+    [
+      { :n => 2, :score => 500, :rolls => [[5,1,3,4,1], [5,1,3,4,1]] },
+      { :n => 2, :score => 50, :rolls => [[2,3,4,2,3], [2,5,3,4,2]] },
+      { :n => 3, :score => 0, :rolls => [[2,3,4,2,3], [2,5,3,4,2], [2,3,4,2,3]] },
+      { :n => 3, :score => 50, :rolls => [[2,3,4,2,3], [2,3,4,2,3], [2,5,3,4,2]] }
+    ].each do |turn|
+      must "must have score of #{turn[:score]} after #{turn[:n]} rolls" do
+        eval <<-END_RUBY
+          def @player.roll_dice
+            @rolls ||= #{turn[:rolls].inspect}
+            @rolls.shift
+          end
+        END_RUBY
+        provide_input(("yes\n" * turn[:n]) + "no")
+        assert_equal(turn[:score], @player.start_turn)
+      end
+    end
   end
 
   class TestGame < Test::Unit::TestCase
