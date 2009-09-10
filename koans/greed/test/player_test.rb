@@ -52,7 +52,7 @@ class PlayerTest < Test::Unit::TestCase
   ].each do |turn|
     must "must have score of #{turn[:score]} after #{turn[:n]} rolls" do
       eval <<-END_RUBY
-        def @player.roll_dice
+        def @player.roll_dice(n_dice = 5)
           @rolls ||= #{turn[:rolls].inspect}
           @rolls.shift
         end
@@ -61,4 +61,16 @@ class PlayerTest < Test::Unit::TestCase
       assert_equal(turn[:score], @player.start_turn)
     end
   end
+  
+  must "only roll number of non-scoring dice after getting a score" do
+    def @player.roll_dice(n_dice = 5)
+      @rolls ||= [[5, 5, 1, 2, 3], [5, 5], [1, 2, 3, 4, 3]]
+      dice = @rolls.shift
+      raise "n_dice(#{n_dice}) != from #{dice.length}" if n_dice != dice.length
+      dice
+    end
+    provide_input("yes\nyes\nyes\nno")
+    assert_equal(400, @player.start_turn)
+  end
+  
 end

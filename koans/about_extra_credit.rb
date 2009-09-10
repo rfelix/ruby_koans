@@ -12,7 +12,7 @@ require 'test/unit'
 $LOAD_PATH << File.join(File.dirname(__FILE__), 'greed', 'lib')
 $LOAD_PATH << File.join(File.dirname(__FILE__), 'greed', 'test')
 
-%w[player_test game_test].each do |test|
+%w[dice_set_test score_test player_test game_test].each do |test|
   require "greed/test/" + test
 end 
 

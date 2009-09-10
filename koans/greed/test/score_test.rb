@@ -1,6 +1,14 @@
 require "greed_test_helper"
 
 class ScoreTest < Test::Unit::TestCase
+  def setup
+    @score = Score.new
+  end
+  
+  def score(dice)
+    @score.calculate(dice)
+  end
+  
   def test_score_of_an_empty_list_is_zero
     assert_equal 0, score([])
   end
@@ -36,5 +44,10 @@ class ScoreTest < Test::Unit::TestCase
   def test_score_of_mixed_is_sum
     assert_equal 250, score([2,5,2,2,3])
     assert_equal 550, score([5,5,5,5])
+  end
+  
+  must "return the non-scoring dice" do
+    @score.calculate([5,5,2,3])
+    assert_equal([2,3], @score.non_scoring_dice)
   end
 end

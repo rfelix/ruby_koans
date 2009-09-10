@@ -11,6 +11,7 @@ class Player
     @output = output
     @name = name
     @dice = DiceSet.new
+    @score = Score.new
   end
   
   def roll_dice(n_dice = 5)
@@ -20,6 +21,7 @@ class Player
   
   def start_turn
     turn_score = 0
+    n_dice_roll = 5
     while true
       @output.puts "#{@name}: Roll?"
       roll_again = roll?(@input.gets.chomp)
@@ -28,9 +30,11 @@ class Player
         @output.puts "Unknown reply. Accepted answers: y(es) or n(o)"
         next
       end
-      dice_roll = roll_dice()
-      dice_score = score(dice_roll)
+      dice_roll = roll_dice(n_dice_roll)
+      dice_score = @score.calculate(dice_roll)
       turn_score += dice_score
+      n_dice_roll = @score.non_scoring_dice.length
+      n_dice_roll = 5 if n_dice_roll.zero?
       return 0 if turn_score > 0 && dice_score == 0
     end
     

@@ -22,5 +22,9 @@ class Game
   
   def start(n_players)
     initialize_players n_players
+    # round robin the players (seperate method)
+    # keep scores for each player but
+    # only start saving player scores when the player has reacher 300 points 
+    # in 1 turn
   end
 end
