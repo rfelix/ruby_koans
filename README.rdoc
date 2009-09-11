@@ -6,9 +6,9 @@ I've also taken the liberty to fix some problems with the actual code that I
 found along the way. I guess one can consider them as just another koan that
 needs to be resolved.
 
-About Extra Credit Project:
+*About the Extra Credit Project*:
 I've completed the extra credit project which is to build the GREED game. I did
-it in a TDD fashion, just after reading the 1st chapter of Ruby Best Practises,
+it in a TDD fashion, just after reading the 1st chapter of Ruby Best Practices,
 so you'll see a lot of familiar code.
 I have to admit that I don't really like how the interface worked out - mixing
 the I/O with the game logic - but hey, it's working at the moment, so for now
