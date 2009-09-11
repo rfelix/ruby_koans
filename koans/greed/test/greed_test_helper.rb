@@ -15,6 +15,10 @@ module StringIOHelper
   end
 
   def expect_output(output)
-    assert_equal(output, @output.string)
+    if output.is_a? Regexp
+      assert_match(output, @output.string)
+    else
+      assert_equal(output, @output.string)
+    end
   end
 end

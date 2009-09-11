@@ -64,12 +64,12 @@ class PlayerTest < Test::Unit::TestCase
   
   must "only roll number of non-scoring dice after getting a score" do
     def @player.roll_dice(n_dice = 5)
-      @rolls ||= [[5, 5, 1, 2, 3], [5, 5], [1, 2, 3, 4, 3]]
+      @rolls ||= [[5, 5, 1, 2, 3], [5, 2], [5], [1, 2, 3, 4, 3]]
       dice = @rolls.shift
       raise "n_dice(#{n_dice}) != from #{dice.length}" if n_dice != dice.length
       dice
     end
-    provide_input("yes\nyes\nyes\nno")
+    provide_input("yes\nyes\nyes\nyes\nno")
     assert_equal(400, @player.start_turn)
   end
   

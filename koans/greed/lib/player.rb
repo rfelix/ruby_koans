@@ -35,7 +35,12 @@ class Player
       turn_score += dice_score
       n_dice_roll = @score.non_scoring_dice.length
       n_dice_roll = 5 if n_dice_roll.zero?
-      return 0 if turn_score > 0 && dice_score == 0
+      @output.puts "Rolled #{dice_score}, with a total of #{turn_score}"
+      if turn_score > 0 && dice_score == 0
+        turn_score = 0
+        @output.puts "Ouch, you were too greedy in this turn."
+        break
+      end
     end
     
     turn_score
